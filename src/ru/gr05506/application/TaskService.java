@@ -6,6 +6,7 @@ import ru.gr05506.domain.TaskRepository;
 import ru.gr05506.infrastructure.InMemoryTaskRepository;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class TaskService {
@@ -47,5 +48,16 @@ public class TaskService {
             if (!t.isDone() && t.getDeadline().isBefore(LocalDate.now())) overdue++;
         }
         return new TaskStatistics( tasks.size() , done ,overdue);
+    }
+
+    public List<Task> filterdedTasks(FilterType filterType) {
+        List<Task> result = new ArrayList<>();
+        TaskFilter filter = filterType.getFilter();
+        for (Task t : getAllTasks()) {
+            if (filter.match(t)){
+                result.add(t);
+            }
+        }
+        return result;
     }
 }

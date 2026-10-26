@@ -1,13 +1,12 @@
 package ru.gr05506.ui;
 
+import ru.gr05506.application.FilterType;
 import ru.gr05506.application.TaskService;
 import ru.gr05506.application.TaskStatistics;
 import ru.gr05506.domain.Task;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.List;
 
 // GOD OBJECT: форма, разбор дат, фильтры, выполнение задач и статистика в одном классе
 public class TaskPresenter {
@@ -50,26 +49,14 @@ public class TaskPresenter {
 
     // O-1: новый фильтр требует новой ветки if
     private void refresh(String filterName) {
-        List<Task> result = new ArrayList<>();
-        for (Task t : service.getAllTasks()) {
-            if (filterName.equals("Все")) {
-                result.add(t);
-            } else if (filterName.equals("Активные")) {
-                if (!t.isDone()) result.add(t);
-            } else if (filterName.equals("Просроченные")) {
-                // SHOTGUN: та же проверка просрочки, что в сервисе и в окне
-                if (!t.isDone() && t.getDeadline().isBefore(LocalDate.now())) result.add(t);
-            } else if (filterName.equals("Высокий приоритет")) {
-                // PRIMITIVE: сравнение строки с "HIGH"
-                if (t.getPriority().equals("HIGH")) result.add(t);
-            }
-        }
-        view.showTasks(result);
+        view.showTasks(service.filterdedTasks(FilterType.fromDisplayName(filterName)));
         view.showStatistics(formatStatistics(service.getStatistics()));
     }
+
     private String formatStatistics(TaskStatistics s){
         return "Всего: " + s.total() + ", выполнено: " + s.done() + ", просрочено: " + s.overdue();
     }
+
     private LocalDate parseDeadline(String text) {
         if (text == null || text.isBlank())
             throw new IllegalArgumentException("Дата выполнения не может быть пустой");
