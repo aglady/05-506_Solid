@@ -17,7 +17,7 @@ public enum FilterType {
             return !task.isDone() && task.getDeadline().isBefore(LocalDate.now());
         }
     },
-    HIGH_PRIORITY("Высокий приоретет"){
+    HIGH_PRIORITY("Высокий приоритет"){
         boolean match(Task task) {
             return task.getPriority().equals("HIGH");
         }
