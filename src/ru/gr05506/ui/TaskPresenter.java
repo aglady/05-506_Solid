@@ -1,6 +1,7 @@
 package ru.gr05506.ui;
 
 import ru.gr05506.application.TaskService;
+import ru.gr05506.application.TaskStatistics;
 import ru.gr05506.domain.Task;
 
 import java.time.LocalDate;
@@ -64,9 +65,11 @@ public class TaskPresenter {
             }
         }
         view.showTasks(result);
-        view.showStatistics(service.buildStatisticsText());
+        view.showStatistics(formatStatistics(service.getStatistics()));
     }
-
+    private String formatStatistics(TaskStatistics s){
+        return "Всего: " + s.total() + ", выполнено: " + s.done() + ", просрочено: " + s.overdue();
+    }
     private LocalDate parseDeadline(String text) {
         if (text == null || text.isBlank())
             throw new IllegalArgumentException("Дата выполнения не может быть пустой");

@@ -36,8 +36,8 @@ public class TaskService {
         return repository.findAll();
     }
 
-    // S-1: сервис формирует готовый текст для экрана
-    public String buildStatisticsText() {
+
+    public TaskStatistics getStatistics() {
         List<Task> tasks = repository.findAll();
         int done = 0;
         int overdue = 0;
@@ -46,6 +46,6 @@ public class TaskService {
             if (t.isDone()) done++;
             if (!t.isDone() && t.getDeadline().isBefore(LocalDate.now())) overdue++;
         }
-        return "Всего: " + tasks.size() + ", выполнено: " + done + ", просрочено: " + overdue;
+        return new TaskStatistics( tasks.size() , done ,overdue);
     }
 }
