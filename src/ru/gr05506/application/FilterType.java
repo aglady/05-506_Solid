@@ -1,31 +1,41 @@
 package ru.gr05506.application;
 
-import ru.gr05506.application.Filters.ActiveTaskFilter;
-import ru.gr05506.application.Filters.AllTasksFilter;
-import ru.gr05506.application.Filters.HighPriorityTaskFilter;
-import ru.gr05506.application.Filters.OverdueTasksFilter;
+import java.time.LocalDate;
+import ru.gr05506.domain.Task;
 
 public enum FilterType {
-    ALL("Все", new AllTasksFilter()),
-    ACTIVE("Активные",new ActiveTaskFilter()),
-    OVERDUE("Просроченные", new OverdueTasksFilter()),
-    HIGH_PRIORITY("Высокий приоретет", new HighPriorityTaskFilter());
+    ALL("Все"){
+        boolean match(Task task){ return true;}
+    },
+    ACTIVE("Активные"){
+        boolean match(Task task) {
+            return (!task.isDone());
+        }
+    },
+    OVERDUE("Просроченные"){
+        boolean match(Task task) {
+            return !task.isDone() && task.getDeadline().isBefore(LocalDate.now());
+        }
+    },
+    HIGH_PRIORITY("Высокий приоретет"){
+        boolean match(Task task) {
+            return task.getPriority().equals("HIGH");
+        }
+    };
+
+    abstract boolean match(Task task);
 
     private final String displayName;
-    private final TaskFilter filter;
 
-    FilterType(String displayName, TaskFilter filter) {
+
+    FilterType(String displayName) {
         this.displayName = displayName;
-        this.filter = filter;
     }
 
     public String getDisplayName() {
         return displayName;
     }
 
-    public TaskFilter getFilter() {
-        return filter;
-    }
 
     public static FilterType fromDisplayName(String name) {
         for (FilterType type: values()) {

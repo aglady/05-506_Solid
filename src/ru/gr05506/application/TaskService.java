@@ -52,9 +52,8 @@ public class TaskService {
 
     public List<Task> filterdedTasks(FilterType filterType) {
         List<Task> result = new ArrayList<>();
-        TaskFilter filter = filterType.getFilter();
         for (Task t : getAllTasks()) {
-            if (filter.match(t)){
+            if (filterType.match(t)){
                 result.add(t);
             }
         }
